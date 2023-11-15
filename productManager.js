@@ -48,20 +48,21 @@ class ProductManager {
         }
     }
 
-    async updateProduct(id, fieldsToUpdate) {
+    async updateProduct({ id, ...fieldsToUpdate }) {
 
         const productoIndex = this.products.findIndex((producto) => producto.id === id);
-        console.log(productoIndex);
+
         if (productoIndex === -1) {
             return { mensaje: 'Producto no encontrado' };
         }
 
 
         this.products[productoIndex] = {
-            ...products[productoIndex],
-            ...fieldsToUpdate,          
-            id: products[productoIndex].id,
+            ...this.products[productoIndex],
+            ...fieldsToUpdate,
         };
+
+        await this.saveFile()
 
         return { mensaje: 'Producto actualizado correctamente', products: this.products[productoIndex] };
     }
@@ -107,16 +108,12 @@ async function PruebaProducts() {
 
     await productManager.addProduct(new Product("Producto1", "Sillon", 400, "pepe", 1, 20));
     await productManager.addProduct(new Product("Producto2", "TV", 600, "dadas", 2, 30));
-
-    productManager.getProducts();
+    await productManager.updateProduct({ id: 1, price: 500, stock: 15 });
 
     await productManager.deleteProduct(1);
 
     productManager.getProducts();
-
-    await productManager.updateProduct(new Product("Producto3", "PC", 1200, "dasda", 2, 40));
-
-    productManager.getProducts();
 }
+
 
 PruebaProducts();
